@@ -1,0 +1,118 @@
+Output : 
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:textColor="#000000"
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Submit" />
+
+</RelativeLayout>
+
+
+
+
+public class test extends FragmentActivity implements textEntered {
+
+        String value;
+        boolean check=false;
+         BottomFragment frg2;
+         FragmentTransaction transaction;
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            Top_Fragment frg=new Top_Fragment();
+            frg2=new BottomFragment();
+            FragmentManager manager=getSupportFragmentManager();
+            transaction=manager.beginTransaction();
+            transaction.add(R.id.My_Container_1_ID, frg, "Frag_Top_tag");
+            transaction.add(R.id.My_Container_3_ID, frg2, "Frag_Bottom_tag");
+            transaction.commit();
+        }
+
+        @Override
+        public void setValue(String editextvalue) {
+             
+            value =editextvalue;
+            Log.i("..............",""+value);
+              if (frg2 != null) {
+                   frg2.setName(value);
+                } 
+              else
+              {
+                  Toast.makeText(getApplicationContext(),"fragment 2  is null", 1000).show();
+              }
+        }
+
+    }
+
+ 
+
+public class Top_Fragment extends Fragment{
+    textEntered mCallback;
+    Button b;
+    EditText ed;
+    public interface textEntered {
+        public void setValue(String editextvalue);
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+         
+
+        View view=inflater.inflate(R.layout.my_fragment1, container, false);
+        ed = (EditText) view.findViewById(R.id.editText1);
+
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) { 
+        super.onActivityCreated(savedInstanceState);
+         b=  (Button) getView().findViewById(R.id.button1);
+            b.setOnClickListener(new OnClickListener()
+            {
+
+                @Override
+                public void onClick(View v) { 
+                    String s =ed.getText().toString();
+                    mCallback.setValue(s);
+                }
+
+            });
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+ 
+        try {
+             mCallback = (textEntered) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement textEntered");
+        }
+    }
+}
